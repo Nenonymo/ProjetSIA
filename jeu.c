@@ -38,19 +38,20 @@ void coup(struct plateau* pPlateau, int move) //Effectue un coup, modifie la var
     do
     {
         move = (move+1) % 16;
-        if (((*pPlateau).grid[move] == 1 || (*pPlateau).grid[move] == 2) && numJoueur(move) != (*pPlateau).nxtPlayer)
-        {
-            (*pPlateau).seed[(*pPlateau).nxtPlayer] += (*pPlateau).grid[move] +1;
-            (*pPlateau).grid[move] = 0;
-        }
-        else {(*pPlateau).grid[move] += 1;}
+        (*pPlateau).grid[move] += 1;
         nbGraines--;
     } while (nbGraines > 0);
+    while ((pPlateau->grid[move] == 2 || pPlateau->grid[move] == 2) && numJoueur(move) != pPlateau->nxtPlayer)
+    {
+        pPlateau->seed[pPlateau->nxtPlayer] += pPlateau->grid[move];
+        pPlateau->grid[move] = 0;
+        move = (move + 15) % 16;
+    }
 }
 
 int gameFinished(struct plateau* pPlateau)
 {
-    if ((*pPlateau).seed[0] + (*pPlateau).seed[1] >= 24)
+    if ((*pPlateau).seed[0] + (*pPlateau).seed[1] >= 56)
     {
         if ((*pPlateau).seed[0] >= (*pPlateau).seed[1]) {return 0;}
         else {return 0;}
