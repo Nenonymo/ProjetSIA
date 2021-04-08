@@ -4,6 +4,8 @@
 
 void afficherPlateau(struct plateau* pPlateau);
 
+int coupPossibles(struct plateau* pPlateau);
+
 void coup(struct plateau* pPlateau, int move);
 
 int numJoueur(int move);

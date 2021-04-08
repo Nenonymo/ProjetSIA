@@ -11,14 +11,42 @@ int caseCoup(int move)
     else {return 23-move;} // 8 derniers cases inversees -> mise en boucle
 }
 
+int coupPossibles(struct plateau* pPlateau)
+{
+    int nbMP = 0; //nombre Mouvements Possibles
+    if (pPlateau->nxtPlayer == 0)
+    {
+        for (int i =0; i < 8; i++)
+        {
+            if (pPlateau->grid[i] != 0) {nbMP++;}
+        }
+    }
+    else if (pPlateau->nxtPlayer == 1)
+    {
+        for (int i =8; i < 16; i++)
+        {
+            if (pPlateau->grid[i] != 0) {nbMP++;}
+        }
+    }
+    return(nbMP);
+}
+
 void afficherPlateau(struct plateau* pPlateau)
 {
+    char addr_[2];
     for (int i=0; i<2; i++) //ligne
     {
         for (int j=0; j<8; j++) //colonne
         {
             //printf("%d[%d] ", caseCoup(i*8+j), (*pPlateau).grid[caseCoup(i*8+j)]); //affiche case et numero
-            printf("[%d] ", (*pPlateau).grid[caseCoup(i*8+j)]); //affiche case
+
+            int case_ = caseCoup(i*8 + j);
+
+            if((case_ / 10) == 0) {addr_[0] = ' ';}
+            else {addr_[0] = (case_ / 10) + '0';}
+            addr_[1] = (case_ % 10) + '0';
+
+            printf("%2s [%d]\t", addr_, (*pPlateau).grid[case_]); //affiche case
         }
         printf("\n");
     }
@@ -35,17 +63,20 @@ void coup(struct plateau* pPlateau, int move) //Effectue un coup, modifie la var
 {
     int nbGraines = (*pPlateau).grid[move];
     (*pPlateau).grid[move] = 0;
-    do
+    if (nbGraines != 0) 
     {
-        move = (move+1) % 16;
-        (*pPlateau).grid[move] += 1;
-        nbGraines--;
-    } while (nbGraines > 0);
-    while ((pPlateau->grid[move] == 2 || pPlateau->grid[move] == 2) && numJoueur(move) != pPlateau->nxtPlayer)
-    {
-        pPlateau->seed[pPlateau->nxtPlayer] += pPlateau->grid[move];
-        pPlateau->grid[move] = 0;
-        move = (move + 15) % 16;
+        do
+        {
+            move = (move+1) % 16;
+            (*pPlateau).grid[move] += 1;
+            nbGraines--;
+        } while (nbGraines > 0);
+        while ((pPlateau->grid[move] == 2 || pPlateau->grid[move] == 2) && numJoueur(move) != pPlateau->nxtPlayer)
+        {
+            pPlateau->seed[pPlateau->nxtPlayer] += pPlateau->grid[move];
+            pPlateau->grid[move] = 0;
+            move = (move + 15) % 16;
+        }
     }
 }
 
@@ -53,8 +84,8 @@ int gameFinished(struct plateau* pPlateau)
 {
     if ((*pPlateau).seed[0] + (*pPlateau).seed[1] >= 56)
     {
-        if ((*pPlateau).seed[0] >= (*pPlateau).seed[1]) {return 0;}
-        else {return 0;}
+        if ((*pPlateau).seed[0] > (*pPlateau).seed[1]) {return 0;}
+        else {return 1;}
     }
     else {return 2;}
 }
