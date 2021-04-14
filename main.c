@@ -8,14 +8,20 @@
 #include "jeu.h"
 #include "bot.h"
 
-#define profMax 8
+#define profMax 20
+
+float tickToSec(clock_t ticks)
+{
+    return (((float)(ticks)) / CLOCKS_PER_SEC);
+}
 
 
 int main () {
-
+    int profExplo = 12;
     struct plateau plat; //Stockage du plateau de jeu principal
     InitPlateau(&plat); //Initialisation du plateau de jeu
     clock_t t;
+    float t_sec;
 
     struct plateau tablePlatExplo[profMax]; //Creation de la table de stockage des situations en cours d'exploration
 
@@ -46,14 +52,15 @@ int main () {
         else //Joueur = Bot
         {
             t = clock(); //Temps avant exploration
-            choix = analyseBestMove(&plat, tablePlatExplo);
-            t = clock() - t; //Temps apres exploration
-            if (choix == -1) {printf("Je passe mon tour (aucun mouvements possibles)...\n");} //Aucun mouvements
+            choix = analyseBestMove(&plat, tablePlatExplo, profExplo);
+            t_sec = tickToSec(clock() - t);
+            if (choix == -1) {printf("Je passe mon tour (aucun mouvement possible)...\n");} //Aucun mouvements
             else //Mouvement possible
             {
-                printf("Explored %d layers in %.4f seconds, the best move is %d...\n",profMax, (((float)(t)) / CLOCKS_PER_SEC), choix); //Affichage des résultats
+                printf("Explored %d layers in %.4f seconds, the best move is %d...\n",profExplo, t_sec, (choix + 1)); //Affichage des résultats
                 coup(&plat, choix);
             }
+            if (t_sec <= 0.3 && profExplo < profMax) {profExplo++;}
             
         }
         

@@ -9,5 +9,5 @@
 
 //int alphaBeta (struct plateau* pPlateau, struct plateau* tableExplo, signed int alpha, signed int beta, int numJoueur, int p);
 
-int analyseBestMove (struct plateau* pPlateau, struct plateau* tableExplo); //Fonction principale du bot calculant le meilleur move
+int analyseBestMove (struct plateau* pPlateau, struct plateau* tableExplo, int profExplo); //Fonction principale du bot calculant le meilleur move
 #endif

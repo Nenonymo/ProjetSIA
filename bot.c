@@ -26,9 +26,9 @@ void nextMove(struct plateau* pPlateau, int move)
 }
 
 
-int alphaBeta (struct plateau* pPlateau, struct plateau* tableExplo, signed int alpha, signed int beta,int p) 
+int alphaBeta (struct plateau* pPlateau, struct plateau* tableExplo, signed int alpha, signed int beta,int p, int profExplo) 
 {
-    if (etatFinal(pPlateau) || p == profMax) {return(evaluation(pPlateau));} //Feuille (par profondeur ou fin de jeu)
+    if (etatFinal(pPlateau) || p == profExplo) {return(evaluation(pPlateau));} //Feuille (par profondeur ou fin de jeu)
 
     else //Noeud a explorer
     {
@@ -43,7 +43,7 @@ int alphaBeta (struct plateau* pPlateau, struct plateau* tableExplo, signed int 
 
                 tableExplo[p] = *pPlateau; //Copie du père dans le fils
                 nextMove(&(tableExplo[p]), i); //Generation du mouvement
-                aB = alphaBeta(&(tableExplo[p]), tableExplo, alpha, beta, p+1); //exploration de l'enfant
+                aB = alphaBeta(&(tableExplo[p]), tableExplo, alpha, beta, p+1, profExplo); //exploration de l'enfant
                 //v = max(aB, v); //Stock maximum de aB et v dans v
                 if (aB > v) {v = aB;} //Plus optimisé que v = max(aB, v), (attribution non nécéssaire)
                 if (v >= beta) {return(v);} //Coupe beta
@@ -61,7 +61,7 @@ int alphaBeta (struct plateau* pPlateau, struct plateau* tableExplo, signed int 
 
                 tableExplo[p] = *pPlateau;
                 nextMove(&(tableExplo[p]), i);
-                aB = alphaBeta(&(tableExplo[p]), tableExplo, alpha, beta, p+1);
+                aB = alphaBeta(&(tableExplo[p]), tableExplo, alpha, beta, p+1, profExplo);
                 //v = min(aB, v); //Stock max de aB et de v dans v
                 if (v > aB) {v = aB;} //Min de aB et v dans B
                 if (alpha >= v) {return(v);}
@@ -74,7 +74,7 @@ int alphaBeta (struct plateau* pPlateau, struct plateau* tableExplo, signed int 
 }
 
 
-int analyseBestMove(struct plateau* pPlateau, struct plateau* tableExplo)
+int analyseBestMove(struct plateau* pPlateau, struct plateau* tableExplo, int profExplo)
 {
     if (coupPossibles(pPlateau) == 0) {return(-1);} //Si aucun coup possibles
     int score[8];
@@ -83,7 +83,7 @@ int analyseBestMove(struct plateau* pPlateau, struct plateau* tableExplo)
         if (pPlateau->grid[i] == 0) {score[i] = -100; continue;} //Score le plus petit = -96
         tableExplo[0] = *pPlateau;
         nextMove(&(tableExplo[0]), i);
-        score[i] = alphaBeta(&(tableExplo[0]), tableExplo, -16*16, 16*16, 1);
+        score[i] = alphaBeta(&(tableExplo[0]), tableExplo, -16*16, 16*16, 1, profExplo);
     }
 
 
