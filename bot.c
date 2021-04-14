@@ -5,7 +5,7 @@
 #include "plateauDeJeu.h"
 #include "jeu.h"
 
-#define profMax 14
+#define profMax 8
 
 int etatFinal (struct plateau* pPlateau) {return((pPlateau->seed[0]+pPlateau->seed[1]) >= 56);}
 

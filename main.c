@@ -8,7 +8,7 @@
 #include "jeu.h"
 #include "bot.h"
 
-#define profMax 14
+#define profMax 8
 
 
 int main () {
@@ -36,6 +36,7 @@ int main () {
                 {
                     printf("Prochain move: ");
                     scanf("%d", &choix);
+                    choix--;
                 } while(moveValide(&plat, choix) != 0);
                 coup(&plat, choix);
             }

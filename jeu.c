@@ -42,11 +42,8 @@ void afficherPlateau(struct plateau* pPlateau)
 
             int case_ = caseCoup(i*8 + j);
 
-            if((case_ / 10) == 0) {addr_[0] = ' ';}
-            else {addr_[0] = (case_ / 10) + '0';}
-            addr_[1] = (case_ % 10) + '0';
 
-            printf("%2s [%d]\t", addr_, (*pPlateau).grid[case_]); //affiche case
+            printf("\t%d [%d]", (case_ + 1), (*pPlateau).grid[case_]); //affiche case
         }
         printf("\n");
     }
@@ -61,17 +58,17 @@ int numJoueur(int move) //retourne le numéro du jouer associé à la case
 
 void coup(struct plateau* pPlateau, int move) //Effectue un coup, modifie la variable prise en entrée
 {
-    int nbGraines = (*pPlateau).grid[move];
-    (*pPlateau).grid[move] = 0;
-    if (nbGraines != 0) 
+    int nbGraines = (*pPlateau).grid[move]; //Calcul du nombre de graines à distribuer
+    (*pPlateau).grid[move] = 0; //Vidage de la case
+    if (nbGraines != 0)
     {
-        do
+        do //Repartition des graines
         {
             move = (move+1) % 16;
             (*pPlateau).grid[move] += 1;
             nbGraines--;
         } while (nbGraines > 0);
-        while ((pPlateau->grid[move] == 2 || pPlateau->grid[move] == 2) && numJoueur(move) != pPlateau->nxtPlayer)
+        while ((pPlateau->grid[move] == 2 || pPlateau->grid[move] == 3) && numJoueur(move) != pPlateau->nxtPlayer) //Capture des graines
         {
             pPlateau->seed[pPlateau->nxtPlayer] += pPlateau->grid[move];
             pPlateau->grid[move] = 0;
@@ -80,8 +77,13 @@ void coup(struct plateau* pPlateau, int move) //Effectue un coup, modifie la var
     }
 }
 
-int gameFinished(struct plateau* pPlateau)
+int gameFinished(struct plateau* pPlateau) //Statut de partie
 {
+    /* Signaux:
+        0 Si Le gagnant est le bot
+        1 si le gagnant est le joueur
+        2 si la partie n'est pas finie
+    */
     if ((*pPlateau).seed[0] + (*pPlateau).seed[1] >= 56)
     {
         if ((*pPlateau).seed[0] > (*pPlateau).seed[1]) {return 0;}
