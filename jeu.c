@@ -31,7 +31,13 @@ int coupPossibles(struct plateau* pPlateau)
     return(nbMP);
 }
 
-void afficherPlateau(struct plateau* pPlateau)
+int inversionCase(int i) 
+{
+    int case_[] = {8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7, 8};
+    return(case_[i]);
+}
+
+void afficherPlateau(struct plateau* pPlateau, int sens)
 {
     char addr_[2];
     for (int i=0; i<2; i++) //ligne
@@ -41,13 +47,15 @@ void afficherPlateau(struct plateau* pPlateau)
             //printf("%d[%d] ", caseCoup(i*8+j), (*pPlateau).grid[caseCoup(i*8+j)]); //affiche case et numero
 
             int case_ = caseCoup(i*8 + j);
+            int case__ = case_;
+            if (sens == 1) {case__ = inversionCase(case_);}
 
 
-            printf("\t%d [%d]", (case_ + 1), (*pPlateau).grid[case_]); //affiche case
+            printf("\t%d [%d]", (case_ + 1), (*pPlateau).grid[case__]); //affiche case
         }
         printf("\n");
     }
-    printf("Player 1: %d\nPlayer 2: %d\nNext Player: %d\n\n", (*pPlateau).seed[0], (*pPlateau).seed[1], (*pPlateau).nxtPlayer);
+    printf("Bot: %d\nPlayer: %d\nNext Player: %d\n\n", (*pPlateau).seed[0], (*pPlateau).seed[1], ((*pPlateau).nxtPlayer + 1));
 }
 
 int numJoueur(int move) //retourne le numéro du jouer associé à la case

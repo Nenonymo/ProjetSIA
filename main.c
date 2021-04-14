@@ -22,10 +22,18 @@ int main () {
     InitPlateau(&plat); //Initialisation du plateau de jeu
     clock_t t;
     float t_sec;
+    int sens;
 
     struct plateau tablePlatExplo[profMax]; //Creation de la table de stockage des situations en cours d'exploration
 
-    afficherPlateau(&plat);
+    //Demande premier joueur
+    int choixFP;
+    printf("Qui est le premier joueur ? (0=bot, 1=humain) ");
+    scanf("%d", &sens);
+    plat.nxtPlayer = sens;
+
+
+    afficherPlateau(&plat, sens);
 
     do
     {
@@ -41,8 +49,11 @@ int main () {
                 do
                 {
                     printf("Prochain move: ");
-                    scanf("%d", &choix);
+                    scanf("%d", &choix); //Recuperation du choix
+
                     choix--;
+                    if (sens == 1) {choix = inversionCase(choix);}
+
                 } while(moveValide(&plat, choix) != 0);
                 coup(&plat, choix);
             }
@@ -57,7 +68,8 @@ int main () {
             if (choix == -1) {printf("Je passe mon tour (aucun mouvement possible)...\n");} //Aucun mouvements
             else //Mouvement possible
             {
-                printf("Explored %d layers in %.4f seconds, the best move is %d...\n",profExplo, t_sec, (choix + 1)); //Affichage des résultats
+                if (sens == 1) {printf("Explored %d layers in %.4f seconds, the best move is %d...\n",profExplo, t_sec, inversionCase(choix)+1);} //Affichage des résultats
+                else {printf("Explored %d layers in %.4f seconds, the best move is %d...\n",profExplo, t_sec, choix+1);}
                 coup(&plat, choix);
             }
             if (t_sec <= 0.3 && profExplo < profMax) {profExplo++;}
@@ -67,7 +79,7 @@ int main () {
 
         plat.nxtPlayer = alternatePlayer(plat.nxtPlayer); //Changement du joueur
 
-        afficherPlateau(&plat); //Affichage du plateau après le round joué
+        afficherPlateau(&plat, sens); //Affichage du plateau après le round joué
         printf("\n\n\n");
 
     } while (gameFinished(&plat) == 2);
